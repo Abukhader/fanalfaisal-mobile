@@ -1,0 +1,80 @@
+{
+  "expo": {
+    "name": "فن الفيصل",
+    "slug": "recruitment",
+    "version": "2.0.6",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "recruitment",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.fn.berry",
+      "buildNumber": "43",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSLocationWhenInUseUsageDescription": "نحتاج للوصول إلى موقعك لتحديد عنوان وموقع التوصيل بدقة على الخريطة."
+      }
+    },
+    "android": {
+      "versionCode": 17,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icon-android (1).png",
+        "backgroundColor": "#0b2240"
+      },
+      "package": "com.fn.berry",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/logo.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#003366"
+        }
+      ],
+      "expo-font",
+      "expo-web-browser",
+      "expo-localization",
+      "@react-native-community/datetimepicker",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "نحتاج للوصول إلى موقعك لتحديد عنوان وموقع التوصيل بدقة على الخريطة."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36
+          }
+        }
+      ],
+      "expo-image",
+      "expo-status-bar"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "supportsRTL": true,
+      "router": {},
+      "eas": {
+        "projectId": "7424a55c-a3ff-4992-86d8-f126971ff294"
+      }
+    }
+  }
+}

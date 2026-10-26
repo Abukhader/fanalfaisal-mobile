@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مسار الدفع — توصيف الفرونت</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+  :root{
+    --ground:#f5f7f4;
+    --surface:#ffffff;
+    --surface-2:#eef1ec;
+    --line:#dbe1d8;
+    --line-strong:#c2cbbe;
+    --ink:#18211a;
+    --ink-2:#4b5750;
+    --ink-3:#78857b;
+    --primary:#2a4028;
+    --primary-soft:#e8efe6;
+    --sand:#b0885c;
+    --sand-soft:#f4ece2;
+    --ok:#2c6e49;
+    --ok-soft:#e3f0e8;
+    --warn:#8a6100;
+    --warn-soft:#f8eed6;
+    --danger:#9d2f2a;
+    --danger-soft:#f7e4e2;
+    --code-bg:#f0f3ee;
+
+    --step:clamp(1rem,0.95rem + 0.2vw,1.0625rem);
+    --radius:10px;
+    --maxw:1080px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#11150f;
+      --surface:#181d16;
+      --surface-2:#1f251d;
+      --line:#2c3429;
+      --line-strong:#3d4739;
+      --ink:#e8ece6;
+      --ink-2:#b0bbaf;
+      --ink-3:#7e8b7e;
+      --primary:#8fb98a;
+      --primary-soft:#1e2a1c;
+      --sand:#cda87f;
+      --sand-soft:#2a2318;
+      --ok:#7cc79a;
+      --ok-soft:#16281d;
+      --warn:#d8ae52;
+      --warn-soft:#2a2213;
+      --danger:#e08a83;
+      --danger-soft:#2c1917;
+      --code-bg:#141a13;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#11150f;
+    --surface:#181d16;
+    --surface-2:#1f251d;
+    --line:#2c3429;
+    --line-strong:#3d4739;
+    --ink:#e8ece6;
+    --ink-2:#b0bbaf;
+    --ink-3:#7e8b7e;
+    --primary:#8fb98a;
+    --primary-soft:#1e2a1c;
+    --sand:#cda87f;
+    --sand-soft:#2a2318;
+    --ok:#7cc79a;
+    --ok-soft:#16281d;
+    --warn:#d8ae52;
+    --warn-soft:#2a2213;
+    --danger:#e08a83;
+    --danger-soft:#2c1917;
+    --code-bg:#141a13;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--ground);
+    color:var(--ink);
+    font-family:"Cairo",system-ui,"Segoe UI",sans-serif;
+    font-size:var(--step);
+    line-height:1.75;
+    direction:rtl;
+    text-align:right;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(16px,4vw,40px) 96px}
+
+  code,pre,.mono,.chip,.path{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+
+  /* ---------- masthead ---------- */
+  .masthead{
+    border-bottom:2px solid var(--ink);
+    padding:clamp(40px,7vw,72px) 0 28px;
+    margin-bottom:44px;
+  }
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--sand);margin:0 0 14px;direction:ltr;text-align:right;
+  }
+  h1{
+    font-size:clamp(2rem,1.4rem + 2.6vw,3.1rem);
+    font-weight:900;line-height:1.15;margin:0 0 14px;
+    text-wrap:balance;letter-spacing:-.01em;
+  }
+  .lede{font-size:clamp(1.05rem,1rem + .3vw,1.25rem);color:var(--ink-2);max-width:60ch;margin:0}
+
+  .facts{
+    display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;
+  }
+  .fact{
+    display:flex;align-items:baseline;gap:8px;
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:99px;padding:6px 14px;font-size:.82rem;
+  }
+  .fact b{color:var(--ink-3);font-weight:600;font-size:.72rem;letter-spacing:.06em}
+  .fact span{font-family:"IBM Plex Mono",monospace;direction:ltr}
+
+  /* ---------- sections ---------- */
+  section{margin:0 0 64px;scroll-margin-top:24px}
+  h2{
+    font-size:clamp(1.35rem,1.15rem + .8vw,1.85rem);
+    font-weight:800;margin:0 0 6px;line-height:1.3;text-wrap:balance;
+  }
+  h2 .num{
+    font-family:"IBM Plex Mono",monospace;font-size:.7em;color:var(--sand);
+    margin-left:12px;font-weight:500;
+  }
+  .sub{color:var(--ink-2);margin:0 0 28px;max-width:65ch}
+  h3{font-size:1.08rem;font-weight:700;margin:34px 0 12px}
+  p{margin:0 0 14px;max-width:68ch}
+
+  /* ---------- endpoint cards ---------- */
+  .ep{
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius);margin:0 0 16px;overflow:hidden;
+  }
+  .ep-head{
+    display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+    padding:14px 16px;border-bottom:1px solid var(--line);
+    background:var(--surface-2);
+  }
+  .verb{
+    font-family:"IBM Plex Mono",monospace;font-size:.72rem;font-weight:600;
+    letter-spacing:.06em;padding:3px 9px;border-radius:5px;direction:ltr;
+  }
+  .verb.get{background:var(--primary-soft);color:var(--primary)}
+  .verb.post{background:var(--sand-soft);color:var(--sand)}
+  .path{font-size:.86rem;direction:ltr;flex:1;min-width:220px;word-break:break-all;color:var(--ink)}
+  .who{
+    font-size:.72rem;color:var(--ink-3);border:1px solid var(--line-strong);
+    border-radius:99px;padding:2px 10px;white-space:nowrap;
+  }
+  .ep-body{padding:16px}
+  .ep-body > :last-child{margin-bottom:0}
+
+  pre{
+    background:var(--code-bg);border:1px solid var(--line);
+    border-radius:8px;padding:14px 16px;margin:0 0 14px;
+    overflow-x:auto;direction:ltr;text-align:left;
+    font-size:.82rem;line-height:1.7;
+  }
+  pre:last-child{margin-bottom:0}
+  code:not(pre code){
+    background:var(--code-bg);border:1px solid var(--line);
+    border-radius:5px;padding:1px 6px;font-size:.84em;direction:ltr;
+    display:inline-block;
+  }
+  .cap{
+    font-size:.75rem;color:var(--ink-3);margin:0 0 6px;
+    font-family:"IBM Plex Mono",monospace;letter-spacing:.05em;direction:ltr;text-align:left;
+  }
+
+  /* ---------- tables ---------- */
+  .tw{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);margin:0 0 18px;background:var(--surface)}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:520px}
+  th,td{text-align:right;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{
+    background:var(--surface-2);font-weight:700;font-size:.76rem;
+    letter-spacing:.05em;color:var(--ink-2);white-space:nowrap;
+  }
+  tr:last-child td{border-bottom:none}
+  td code{font-size:.8em}
+  .num-col{font-variant-numeric:tabular-nums}
+
+  /* ---------- callouts ---------- */
+  .note{
+    border-radius:var(--radius);padding:16px 18px;margin:0 0 18px;
+    border:1px solid var(--line);background:var(--surface);
+  }
+  .note p:last-child{margin-bottom:0}
+  .note .lbl{
+    display:block;font-size:.72rem;font-weight:700;letter-spacing:.1em;
+    text-transform:uppercase;margin-bottom:7px;
+  }
+  .note.rule{border-color:var(--danger);background:var(--danger-soft)}
+  .note.rule .lbl{color:var(--danger)}
+  .note.warn{border-color:var(--warn);background:var(--warn-soft)}
+  .note.warn .lbl{color:var(--warn)}
+  .note.info{border-color:var(--primary);background:var(--primary-soft)}
+  .note.info .lbl{color:var(--primary)}
+
+  /* ---------- steps ---------- */
+  .steps{list-style:none;margin:0 0 20px;padding:0;counter-reset:s}
+  .steps > li{
+    counter-increment:s;position:relative;
+    padding:0 46px 0 0;margin:0 0 26px;
+  }
+  .steps > li::before{
+    content:counter(s);
+    position:absolute;right:0;top:2px;
+    width:30px;height:30px;border-radius:50%;
+    background:var(--primary);color:var(--ground);
+    display:grid;place-items:center;
+    font-family:"IBM Plex Mono",monospace;font-size:.82rem;font-weight:600;
+  }
+  .steps h3{margin:0 0 8px;font-size:1.02rem}
+  .steps > li > :last-child{margin-bottom:0}
+
+  /* ---------- state pills ---------- */
+  .pill{
+    display:inline-block;font-size:.74rem;font-weight:600;
+    padding:2px 10px;border-radius:99px;white-space:nowrap;
+  }
+  .pill.ok{background:var(--ok-soft);color:var(--ok)}
+  .pill.warn{background:var(--warn-soft);color:var(--warn)}
+  .pill.off{background:var(--surface-2);color:var(--ink-3);border:1px solid var(--line)}
+  .pill.bad{background:var(--danger-soft);color:var(--danger)}
+
+  /* ---------- checklist ---------- */
+  .check{list-style:none;padding:0;margin:0}
+  .check li{
+    display:flex;gap:12px;align-items:flex-start;
+    padding:11px 0;border-bottom:1px solid var(--line);
+  }
+  .check li:last-child{border-bottom:none}
+  .check li::before{
+    content:"";flex:0 0 16px;height:16px;margin-top:6px;
+    border:1.5px solid var(--line-strong);border-radius:4px;
+  }
+  hr{border:none;border-top:1px solid var(--line);margin:40px 0}
+  .foot{color:var(--ink-3);font-size:.85rem;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Frontend Task · api.fanalfisal.com.sa</p>
+    <h1>مسار الدفع</h1>
+    <p class="lede">شاشة واحدة، وقاعدة واحدة تحكمها: البوابة تُقرأ من السيرفر لا من الكود. المكتب يبدّل بوابته من لوحة التحكم، والتطبيق يتبع بلا نسخة جديدة.</p>
+    <div class="facts">
+      <div class="fact"><b>BASE</b><span>https://api.fanalfisal.com.sa/api</span></div>
+      <div class="fact"><b>AUTH</b><span>Bearer &lt;token&gt;</span></div>
+      <div class="fact"><b>QUERY</b><span>?Lang=ar</span></div>
+    </div>
+  </header>
+
+  <section>
+    <h2>غلاف الرد</h2>
+    <p>كل نقطة ترجع الشكل نفسه. <code>success</code> هو ما تفحصه، لا رمز HTTP — النقطة قد ترجع <code>200</code> مع <code>success: 0</code>.</p>
+    <pre>{
+  "success": 1,          // 1 نجاح · 0 رفض · -1 خطأ داخلي
+  "errors":  null,
+  "message": "تم بنجاح",  // نص جاهز للعرض، مترجم حسب Lang
+  "data":    { },
+  "files":   null
+}</pre>
+    <p><strong>اعرض <code>message</code> كما هو عند الرفض.</strong> النصوص مترجمة في السيرفر ومصاغة للعميل؛ لا تكتب رسائلك الخاصة فوقها.</p>
+    <p>كل التواريخ العائدة <strong>UTC</strong>. حوّلها عند العرض.</p>
+  </section>
+
+  <hr>
+
+  <section>
+    <h2><span class="num">A</span>الوسائل المتاحة</h2>
+    <p class="sub">هذه أول نداء في الشاشة، ومنه تُبنى كل الأزرار.</p>
+
+    <div class="note rule">
+      <span class="lbl">القاعدة التي يقوم عليها هذا كله</span>
+      <p>المكتب يفعّل بوابته ويدخل مفاتيحها من لوحة التحكم، بلا رفع نسخة. فقائمة بوابات ثابتة في كود التطبيق تعني <strong>نسخة جديدة في المتجر كل مرة يغيّر فيها المكتب بوابته</strong> — وهو ما بُني هذا النظام كله لتفاديه.</p>
+    </div>
+
+    <div class="ep">
+      <div class="ep-head">
+        <span class="verb get">GET</span>
+        <span class="path">/PaymentMethods/Available?Lang=ar&amp;OrderId=…</span>
+        <span class="who">توكن عميل</span>
+      </div>
+      <div class="ep-body">
+        <p>يرجع الوسائل المفعَّلة لمكتب هذا الطلب وحده:</p>
+        <pre>[
+  { "method": "Moyasar", "sortOrder": 10,
+    "publicKey": "pk_live_…", "isSandbox": false,
+    "minAmount": null, "maxAmount": null, "currency": "SAR" }
+]</pre>
+        <p>ابنِ الأزرار بترتيب <code>sortOrder</code>. و<code>publicKey</code> معلن بطبيعته ويُستعمل في واجهة البوابة.</p>
+        <div class="note warn">
+          <span class="lbl">افحص المبالغ قبل العرض</span>
+          <p><code>minAmount</code> و<code>maxAmount</code> ليسا زينة: بوابة تقسيط لا تقبل ‎٢٠ ريالاً. عرض وسيلة ثم رفضها بعد ضغطة تجربة سيئة يمكن تفاديها بسطر.</p>
+        </div>
+        <div class="note bad">
+          <span class="lbl">لو رأيت مفتاحاً سرياً، أبلغ فوراً</span>
+          <p>السيرفر لا يعيد أي مفتاح سري أبداً — لا في هذه النقطة ولا في غيرها. ظهور واحد يعني خللاً أمنياً لا سوء فهم.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <section>
+    <h2><span class="num">B</span>نقاط موياسر</h2>
+    <p class="sub">مؤكَّدة بفحص حيّ على السيرفر — وجود المسار وفعله.</p>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>النقطة</th><th>الفعل</th><th>الغرض</th></tr></thead>
+        <tbody>
+          <tr><td><code>/Moyasar/CreatePayment</code></td><td><span class="pill ok">POST</span></td><td>إنشاء عملية دفع</td></tr>
+          <tr><td><code>/Moyasar/Create</code></td><td><span class="pill ok">POST</span></td><td>موجودة أيضاً — يُرجَّح أنها الأقدم</td></tr>
+          <tr><td><code>/Moyasar/Status</code></td><td><span class="pill ok">POST</span></td><td>فحص حالة الدفع</td></tr>
+          <tr><td><code>/Moyasar/Webhook</code></td><td><span class="pill off">POST</span></td><td>رد البوابة — خادم لخادم، لا يناديها الفرونت</td></tr>
+          <tr><td><code>/Moyasar/Callback</code></td><td><span class="pill off">GET</span></td><td>عودة المتصفح بعد الدفع</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note warn">
+      <span class="lbl">حقول الطلب لم تُوثَّق بعد — يُكملها فريق الباك إند</span>
+      <p>موياسر سابقة لهذا العمل ولم يُقرأ كودها بعد. المسارات والأفعال أعلاه <strong>مؤكَّدة</strong>، أما أسماء حقول الطلب والرد فتُملأ من <code>MoyasarController.cs</code> قبل بدء التنفيذ. لا تبنِ على أسماء مخمَّنة.</p>
+    </div>
+
+    <h3>المسار الذي يمشي عليه الفرونت</h3>
+    <ol class="steps">
+      <li>العميل يختار وسيلة من <code>Available</code>.</li>
+      <li>نداء <code>POST /Moyasar/CreatePayment</code> بمعرّف الفاتورة أو الطلب.</li>
+      <li>الرد يحمل رابط تحويل — <strong>افتحه كما ورد ولا تبنِ رابطاً بنفسك.</strong></li>
+      <li>العميل يدفع في صفحة البوابة، ثم يعود إلى <code>Callback</code>.</li>
+      <li>اعرض «جارٍ التأكيد»، واستطلع <code>Status</code> أو انتظر البثّ.</li>
+    </ol>
+
+    <div class="note rule">
+      <span class="lbl">لا تؤكد الدفع من عودة المتصفح</span>
+      <p>المتصفح قد يُغلق قبل العودة، والشبكة قد تنقطع، والعميل قد يضغط رجوع. المصدر الموثوق هو <code>Webhook</code> الذي يصل السيرفر مباشرة. عودة المتصفح إشارة أن العملية انتهت، لا إثبات أنها نجحت.</p>
+    </div>
+
+    <h3>التتبع الحي</h3>
+    <p>بدل استطلاع <code>Status</code> كل ثانية، اشترك في الـ hub الموجود:</p>
+    <pre>const c = new signalR.HubConnectionBuilder()
+  .withUrl("https://api.fanalfisal.com.sa/notificationHub")
+  .withAutomaticReconnect()
+  .build();</pre>
+  </section>
+
+  <hr>
+
+  <section>
+    <h2>سبب يخص هذه الشاشة وحدها</h2>
+    <p>رد البوابة وعودة المتصفح يصلان خلال أجزاء من الثانية في كل عملية ناجحة. وقد أدى ذلك فعلاً في هذا النظام إلى تسجيل <strong>‎٨٠ دفعة مرتين</strong>، بفارق أقل من عُشر ثانية بين الصفين، وبمجموع تجاوز <strong>‎١٢٣ ألف ريال</strong>.</p>
+    <div class="note bad">
+      <span class="lbl">ثلاثة أشياء تمنع تكرارها من جهة الواجهة</span>
+      <p>لا تنادِ نقطة تسوية الدفع مرتين.<br>
+      لا تُعِد المحاولة تلقائياً عند انتهاء المهلة — اعرض الحالة واستطلعها.<br>
+      عطّل زر الدفع فور أول ضغطة حتى يعود رد.</p>
+    </div>
+    <p>على السيرفر حارس يمنع الازدواج منذ ‎٢٩ أغسطس ‎٢٠٢٦، <strong>لكن الواجهة لا يجب أن تتكئ عليه.</strong> الحارس شبكة أمان أخيرة، لا بديل عن سلوك سليم.</p>
+  </section>
+
+  <hr>
+
+  <section>
+    <h2>البوابات الأخرى</h2>
+    <div class="tw">
+      <table>
+        <thead><tr><th>البوابة</th><th>الحالة</th></tr></thead>
+        <tbody>
+          <tr><td>Moyasar</td><td><span class="pill ok">تعمل</span> النشطة حالياً</td></tr>
+          <tr><td>MyFatoorah</td><td><span class="pill ok">تعمل</span></td></tr>
+          <tr><td>Dinero Pay</td><td><span class="pill ok">تعمل</span> تحتاج حساب تاجر لكل موقع</td></tr>
+          <tr><td>Tamara</td><td><span class="pill bad">لا كود دفع لها</span></td></tr>
+          <tr><td>Tabby</td><td><span class="pill bad">لا كود دفع لها</span></td></tr>
+          <tr><td>UrWay</td><td><span class="pill off">اسم في القائمة، بلا كود</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note warn">
+      <span class="lbl">تمارا وتابي تظهران في اللوحة وهما لا تعملان</span>
+      <p>يستطيع المكتب تفعيلهما وإدخال مفاتيحهما، فتظهران في <code>Available</code> — <strong>ولن يحدث شيء لو ضغط العميل عليهما</strong>، لأن الكنترولر غير موجود بعد. حتى تُبنى، تجاهلهما في الواجهة.</p>
+    </div>
+  </section>
+
+  <hr>
+
+  <section>
+    <h2>معايير القبول</h2>
+    <ul class="check">
+      <li>شاشة الدفع تُبنى من <code>Available</code> بترتيب <code>sortOrder</code>، لا من قائمة ثابتة في الكود.</li>
+      <li><code>minAmount</code> و<code>maxAmount</code> يُفحصان قبل عرض الوسيلة لا بعد الضغط عليها.</li>
+      <li>لا يوجد في الواجهة أي مسار يعرض مفتاحاً سرياً.</li>
+      <li>رابط التحويل يُفتح كما ورد، بلا بناء يدوي.</li>
+      <li>تأكيد الدفع من <code>Status</code> أو البثّ، لا من عودة المتصفح وحدها.</li>
+      <li>زر الدفع يُعطَّل فور أول ضغطة، ولا إعادة محاولة تلقائية لنداء التسوية.</li>
+      <li>كل رسالة رفض معروضة هي <code>message</code> العائد، لا نص مكتوب في الواجهة.</li>
+      <li>تمارا وتابي لا تظهران للعميل حتى يصل إشعار بجاهزيتهما.</li>
+    </ul>
+    <p class="foot">الواجهات الخلفية منشورة على <span dir="ltr">api.fanalfisal.com.sa</span>. حقول طلب موياسر يُكملها فريق الباك إند من <span dir="ltr">MoyasarController.cs</span> قبل بدء التنفيذ.</p>
+  </section>
+
+</div>
+</body>
+</html>
